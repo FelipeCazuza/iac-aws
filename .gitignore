@@ -1,0 +1,10 @@
+### Terraforma ###
+# Diretórios locais .terraform
+**/.terraform/*
+
+# arquivos .tfstate
+*.tfstate
+*.tfstate.*
+*.pem
+*. access_key
+*.secret_key
