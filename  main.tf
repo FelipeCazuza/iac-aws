@@ -25,6 +25,20 @@ resource "aws_vpc" "teste" {
   }
 } 
 
+resource "aws_security_group" "app_security_group"{
+  name                = "app-security-group"
+  description         = "Server.Terraform"
+  vpc_id              = aws_vpc.teste.id
+
+# Regras de entrada permitem o tráfego necessário para a aplicação
+  ingress{
+    from_port         = 80
+    to_port           = 80
+    protocol          = "tcp"
+    cidr_blocks        = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_subnet" "app_subnet" {
   count               = 1
   vpc_id              = aws_vpc.teste.id
@@ -42,6 +56,7 @@ resource "aws_instance" "app_server" {
   instance_type = "t2.micro" 
   key_name = "amazon-linux"
   subnet_id = aws_subnet.app_subnet[0].id  
+  security_groups =[aws_security_group.app_security_group.id]
   tags = {
     Name = "Server.terraform"
   }
