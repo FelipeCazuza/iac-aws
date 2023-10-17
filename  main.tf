@@ -18,25 +18,41 @@ secret_key = "Yy9iIse09Vj0BthMoww497FaApOeLtfwUo45xkQy"
 
 
 resource "aws_vpc" "teste" {
-  cidr_block = "10.0.0.0/21"
+  cidr_block          = "10.0.0.0/16"  
   
-  
-
   tags = {
-    Name = "terraform"
+  Name = "Rede.terraform"
   }
 } 
-resource "aws_instance" "app_server" {
-  ami           = "ami-041feb57c611358bd"
-  instance_type = "t2.micro"
-  subnet_id = "subnet-01f8f79c07c0a3ad2"
-  key_name = "amazon-linux"
+
+resource "aws_subnet" "app_subnet" {
+  count               = 1
+  vpc_id              = aws_vpc.teste.id
+  cidr_block          = "10.0.0.0/16"
   
-  tags = {
-    Name = "terraform"
-  }
+  
+    tags = {
+    Name = "subrede.terraform"
+   }
 }
 
-resource "aws_eip" "elástico" {
-  instance = aws_instance.app_server.id
-}
+
+resource "aws_instance" "app_server" {
+  count         = 1
+  ami           = "ami-041feb57c611358bd"
+  instance_type = "t2.micro" 
+  key_name = "amazon-linux"
+
+  subnet_id = aws_subnet.app_subnet[0].id  
+
+  tags = {
+    Name = "Server.terraform"
+  }
+
+}    
+
+
+
+#resource "aws_eip" "elástico" {
+ # instance = aws_instance.app_server.id
+#}
