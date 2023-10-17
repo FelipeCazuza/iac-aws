@@ -18,7 +18,7 @@ secret_key = "Yy9iIse09Vj0BthMoww497FaApOeLtfwUo45xkQy"
 
 
 resource "aws_vpc" "teste" {
-  cidr_block          = "10.0.0.0/16"  
+  cidr_block         = "10.0.0.0/16"  
   
   tags = {
   Name = "Rede.terraform"
@@ -29,10 +29,9 @@ resource "aws_subnet" "app_subnet" {
   count               = 1
   vpc_id              = aws_vpc.teste.id
   cidr_block          = "10.0.0.0/16"
-  
-  
+  availability_zone   = "us-east-1a"
     tags = {
-    Name = "subrede.terraform"
+      Name = "subrede.terraform"
    }
 }
 
@@ -42,17 +41,36 @@ resource "aws_instance" "app_server" {
   ami           = "ami-041feb57c611358bd"
   instance_type = "t2.micro" 
   key_name = "amazon-linux"
-
   subnet_id = aws_subnet.app_subnet[0].id  
-
   tags = {
     Name = "Server.terraform"
   }
 
-}    
+}
 
+resource "aws_internet_gateway" "igw" {
+  vpc_id          = aws_vpc.teste.id
+    tags = {
+    Name = "internet_igw.terraform"
+  }
+}
 
+resource "aws_route_table" "public" {
+  vpc_id          = aws_vpc.teste.id
+  route {
+      cidr_block  = "0.0.0.0/0"
+      gateway_id  = aws_internet_gateway.igw.id
+  }
+    tags = {
+    Name = "tabela.roteamento-igw.terraform"
+  }
+}
 
-#resource "aws_eip" "elástico" {
- # instance = aws_instance.app_server.id
-#}
+resource "aws_route_table_association" "public"{
+   subnet_id       = aws_subnet.app_subnet[0].id
+    route_table_id = aws_route_table.public.id
+}
+
+resource "aws_eip" "elástico" {
+  instance = aws_instance.app_server[0].id
+}
