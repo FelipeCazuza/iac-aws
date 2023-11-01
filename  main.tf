@@ -62,8 +62,8 @@ resource "aws_instance" "app_server" {
       # Atualize o sistema 
       sudo yum update -y
       sudo yum install httpd -y
+      sudo chmod -R a+w /var/www
       echo "<h1>Bem-vindo ao meu site</h1>" > /var/www/html/index.html
-     sudo chmod -R a+w /var/www
      #Inicie o Apache e habilite-o na inicialização
      sudo systemctl start httpd
      sudo systemctl enable httpd
