@@ -40,18 +40,19 @@ resource "aws_security_group" "app_security_group"{
 }
 
 resource "aws_subnet" "app_subnet" {
-  count               = 1
+  count               = 3
   vpc_id              = aws_vpc.teste.id
-  cidr_block          = "10.0.0.0/16"
+  cidr_block          = "10.0.${count.index}.0/24" 
   availability_zone   = "us-east-1a"
     tags = {
-      Name = "subrede.terraform"
+      Name = "subnet-terraform-${count.index + 1}",
+      Environment = "subrede.terraform"
    }
 }
 
 
 resource "aws_instance" "app_server" {
-  count         = 1
+  count         = 3
   ami           = "ami-041feb57c611358bd"
   instance_type = "t2.micro" 
   key_name = "tst"
