@@ -52,23 +52,13 @@ resource "aws_subnet" "app_subnet" {
 
 
 resource "aws_instance" "app_server" {
-  count         = 3
+  count         = 1
   ami           = "ami-041feb57c611358bd"
   instance_type = "t2.micro" 
   key_name = "tst"
   subnet_id = aws_subnet.app_subnet[0].id  
   security_groups =[aws_security_group.app_security_group.id]
-  user_data = <<-EOF
-        #!/bin/bash
-      # Atualize o sistema 
-      sudo yum update -y
-      sudo yum install httpd -y
-      sudo chmod -R a+w /var/www
-      echo "<h1>Bem-vindo ao meu site</h1>" > /var/www/html/index.html
-     #Inicie o Apache e habilite-o na inicialização
-     sudo systemctl start httpd
-     sudo systemctl enable httpd
-                EOF 
+  
   tags = {
     Name = "Server.terraform"
   }
