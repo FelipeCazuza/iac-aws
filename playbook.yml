@@ -1,26 +1,12 @@
-- name: Install Apache
-  hosts: web-servers
-  become: yes
-
-  tasks:
-    - name: Determine package manager
-      command: "{{ item }}"
-      with_items:
-        #- "dnf --version"
-        - "yum --version"
-      register: pkg_mgr_output
-      ignore_errors: yes
-      changed_when: false
-
-    - name: Install Apache using package manager
-      package:
-        name: httpd
-        state: present
-      when: ansible_system == 'Linux' and ansible_distribution == 'Amazon' and "dnf" in pkg_mgr_output.results[0].stdout
-
-    - name: Start Apache service
-      service:
-        name: httpd
-        state: started
-        enabled: yes
-      when: ansible_system == 'Linux' and ansible_distribution == 'Amazon' and "dnf" in pkg_mgr_output.results[0].stdout
+- hosts: terraform-ansible
+  become: yes 
+  tasks: 
+    - name: Instalando o python3, virtualenv
+      apt: 
+        pkg: 
+        - python3
+        - virtualenv
+        update_cache: yes
+        
+        
+        
