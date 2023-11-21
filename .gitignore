@@ -5,6 +5,6 @@
 # arquivos .tfstate
 *.tfstate
 *.tfstate.*
-*.pem
+*.pem *
 *.access_key *
 *.secret_key *
